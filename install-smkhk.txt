@@ -1,0 +1,33 @@
+#bin/bash
+apt install git php -y
+git clone https://github.com/smkhk/home.git
+cat >start-home <<EOL
+#bin/bash
+cd home
+php -S 0.0.0.0:8080 
+EOL
+cat >update-home <<EOL
+#bin/bash
+mkdir ~/backup-home
+cp ~/home/include/config.php ~/backup-home/config.php
+cp -rf ~/home/voucher/. ~/backup-home/voucher/
+cp -rf ~/home/img/. ~/backup-home/img/
+rm -rf home
+git clone https://github.com/smkhk/home.git
+cp ~/backup-home/config.php ~/home/include/config.php
+cp -rf ~/backup-home/voucher/. ~/home/voucher/
+cp -rf ~/backup-home/img/. ~/home/img/
+rm -rf ~/backup-home
+./start-home
+EOL
+cat >remove-home <<EOL
+#bin/bash
+rm -rf home
+EOL
+cat >.bashrc <<EOL	
+~/start-home	
+EOL
+chmod +x start-home
+chmod +x update-home
+chmod +x remove-home
+./start-home
